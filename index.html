@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Logistiq Commissioning Platform</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f3f6fa;
+  padding:20px;
+  color:#1f2937;
+}
+
+.app-container{
+  max-width:1200px;
+  margin:auto;
+}
+
+.header{
+  background:linear-gradient(135deg,#003B7A,#0066CC);
+  padding:30px;
+  border-radius:20px;
+  color:white;
+  margin-bottom:24px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.15);
+}
+
+.logo{
+  width:240px;
+  margin-bottom:18px;
+}
+
+.header-title{
+  font-size:34px;
+  font-weight:bold;
+}
+
+.header-subtitle{
+  color:#dbeafe;
+  margin-top:8px;
+}
+
+.dashboard{
+  position:sticky;
+  top:10px;
+  z-index:1000;
+
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+
+  margin-bottom:24px;
+  padding-bottom:10px;
+
+  background:#f3f6fa;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+  border-left:6px solid #78BE20;
+}
+
+.card-title{
+  color:#6b7280;
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.card-value{
+  font-size:32px;
+  font-weight:bold;
+  color:#003B7A;
+}
+
+.site-info{
+  background:white;
+  padding:24px;
+  border-radius:18px;
+  margin-bottom:24px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.input-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.input-group{
+  margin-bottom:16px;
+}
+
+label{
+  display:block;
+  margin-bottom:6px;
+  font-weight:600;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:2px solid #d1d5db;
+  font-size:15px;
+}
+
+.search-bar{
+  width:100%;
+  margin-bottom:20px;
+}
+
+.section{
+  background:white;
+  border-radius:18px;
+  margin-bottom:20px;
+  overflow:hidden;
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.section.disabled{
+  opacity:0.45;
+}
+
+.section-header{
+  background:#003B7A;
+  color:white;
+  padding:18px;
+  font-size:20px;
+  font-weight:bold;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  cursor:pointer;
+}
+
+.section-stats{
+  font-size:13px;
+  color:#dbeafe;
+}
+
+.section-content{
+  padding:20px;
+  display:none;
+}
+
+.section.open .section-content{
+  display:block;
+}
+
+.check-item{
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:16px;
+  transition:0.2s;
+}
+
+.check-item.completed{
+  background:#f0fdf4;
+  border-color:#78BE20;
+}
+
+.red-item{
+  border-left:6px solid #ef4444;
+}
+
+.check-title{
+  font-weight:bold;
+  margin-bottom:10px;
+  font-size:16px;
+}
+
+.check-description{
+  color:#4b5563;
+  margin-bottom:12px;
+}
+
+.notes{
+  width:100%;
+  min-height:70px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #d1d5db;
+  margin-top:10px;
+}
+
+.warning{
+  background:#fef2f2;
+  color:#b91c1c;
+  padding:12px;
+  border-radius:10px;
+  margin-top:10px;
+  font-weight:bold;
+}
+
+.owner{
+  margin-top:10px;
+  font-size:13px;
+  color:#6b7280;
+}
+
+.reference-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:14px;
+}
+
+.ref-btn{
+  background:#0066CC;
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.na-toggle{
+  margin-bottom:18px;
+  padding:14px;
+  background:#f3f4f6;
+  border-radius:12px;
+}
+
+.footer{
+  text-align:center;
+  margin-top:30px;
+  color:#6b7280;
+  font-size:13px;
+}
+
+@media(max-width:768px){
+
+  .dashboard{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .input-row{
+    grid-template-columns:1fr;
+  }
+
+  .section-header{
+    font-size:16px;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app-container">
+
+<div class="header">
+
+<img src="Logistiq.png" class="logo">
+
+<div class="header-title">
+Commissioning Platform
+</div>
+
+<div class="header-subtitle">
+Mobile-Friendly Internal Engineering Tool
+</div>
+
+</div>
+
+<div class="dashboard">
+
+<div class="card">
+<div class="card-title">Total Checks</div>
+<div class="card-value" id="totalChecks">0</div>
+</div>
+
+<div class="card">
+<div class="card-title">Completed</div>
+<div class="card-value" id="completedChecks">0</div>
+</div>
+
+<div class="card">
+<div class="card-title">Pending</div>
+<div class="card-value" id="pendingChecks">0</div>
+</div>
+
+<div class="card">
+<div class="card-title">% Complete</div>
+<div class="card-value" id="completionPercent">0%</div>
+</div>
+
+<div class="card">
+<div class="card-title">Critical Remaining</div>
+<div class="card-value" id="criticalRemaining">0</div>
+</div>
+
+</div>
+
+<div class="site-info">
+
+<h2 style="margin-bottom:20px;color:#003B7A;">
+Site Information
+</h2>
+
+<div class="input-row">
+
+<div class="input-group">
+<label>Site Name</label>
+<input type="text">
+</div>
+
+<div class="input-group">
+<label>Finger</label>
+<input type="text">
+</div>
+
+<div class="input-group">
+<label>Controls Tech</label>
+<input type="text">
+</div>
+
+<div class="input-group">
+<label>FPM</label>
+<input type="text">
+</div>
+
+</div>
+
+</div>
+
+<input 
+type="text"
+class="search-bar"
+id="searchBar"
+placeholder="Search checklist..."
+>
+
+<div id="checklistContainer"></div>
+
+<div class="footer">
+Logistiq Internal Engineering Platform
+</div>
+
+</div>
+
+<script>
+
+const checklistData = [
+
+{
+  category:"Y-Merge (Elevated checks only)",
+  allowNA:true,
+
+  items:[
+
+    {
+      title:"Verify Y-Merge Power Architecture",
+      description:"Verify installation matches site-specific drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Electrical Components Drawing",
+          url:"ADTA25-YMERGE-DFH7-EG-LS3026-ELECTRICAL COMPONENT REV 001 (1).pdf"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Y-merge Network architecture",
+      description:"Verify installation matches site-specific drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Network Architecture",
+          url:"ADTA25-YMERGE-DFH7-EG-LS3026-ELECTRICAL COMPONENT REV 001 (1).pdf"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Y-merge IP's",
+      description:"Verify installation matches site-specific drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"IP Reference",
+          url:"ADTA25-YMERGE-DFH7-EG-LS3026-ELECTRICAL COMPONENT REV 001 (1).pdf"
+        }
+      ]
+    },
+
+    {
+      title:"Verify location of PE91",
+      description:"Verify installation matches site-specific Electrical Components Drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Electrical Components Drawing",
+          url:"ADTA25-YMERGE-DFH7-EG-LS3026-ELECTRICAL COMPONENT REV 001 (1).pdf"
+        }
+      ]
+    },
+
+    {
+      title:"Verify parameters in PE91",
+      description:"Ensure jam PE's have the correct parameters.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"PE Guidance",
+          url:"https://lewco.sharepoint.com/:w:/s/FieldService-FieldService-FieldControls/EQad9vJ-EjBNnjxh88brj_EB8WEqFJHvzqD419y9OIsAww?e=lbRBu2"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Jam functionality in PE91",
+      description:"Verify correct PE shows jammed and proper alarm is displayed on HMI.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Jam Validation",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify All Y-merge roller directions",
+      description:"Individually start each roller to confirm correct direction.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Roller Direction Drawing",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify all Y-merge roller speeds",
+      description:"Use tach to ensure speeds are within spec tolerance.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Speed Specification",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Y-merge starts in auto with no faults",
+      description:"Press start and verify all belts turn green with zero alarms.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Alarm List",
+          url:"#"
+        }
+      ]
+    }
+
+  ]
+},
+
+{
+  category:"2025 Decline (Elevated checks only)",
+  allowNA:true,
+
+  items:[
+
+    {
+      title:"Verify Decline belt speed and direction",
+      description:"Use tach and ensure belt speed is within spec tolerance.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Decline Speed Specification",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify location of PE92",
+      description:"Verify installation matches Electrical Components Drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Electrical Components Drawing",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify parameters in PE92",
+      description:"Ensure jam PE parameters are correct.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"PE92 Guidance",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Jam functionality in PE92",
+      description:"Verify proper jam alarm appears on HMI.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Jam Validation",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify PC 9/10 location",
+      description:"Verify installation matches Electrical Components Drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Electrical Components Drawing",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify PC9/10 functionality",
+      description:"Verify STO condition and proper HMI alarms.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"STO Validation",
+          url:"#"
+        }
+      ]
+    }
+
+  ]
+},
+
+{
+  category:"Buffer (Elevated checks only)",
+  allowNA:true,
+
+  items:[
+
+    {
+      title:"Verify location of ESTOP Panel",
+      description:"Ensure Estop PDP is on correct side of buffer bed in relation to hazards.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"E-Stop Drawing",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify location of PC E-stop 1/2",
+      description:"Verify installation matches Electrical Components Drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Electrical Components Drawing",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify functionality of PC E-stop 1/2",
+      description:"Verify STO condition and proper system stop behavior.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"STO Validation",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify location of PE93",
+      description:"Verify installation matches Electrical Components Drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Electrical Components Drawing",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify parameters in PE93",
+      description:"Ensure jam PE parameters are correct.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"PE93 Guidance",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Jam functionality in PE93",
+      description:"Verify proper jam alarm appears on HMI.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Jam Validation",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify location of PE94",
+      description:"Verify installation matches Electrical Components Drawings.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Electrical Components Drawing",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify parameters in PE94",
+      description:"Ensure jam PE parameters are correct.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"PE94 Guidance",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Jam functionality in PE94",
+      description:"Verify proper jam alarm appears on HMI.",
+      critical:true,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"Jam Validation",
+          url:"#"
+        }
+      ]
+    },
+
+    {
+      title:"Verify Estop Panel PDP animation during Estop condition",
+      description:"Panel should display red during STO conditions.",
+      critical:false,
+      owner:"Field Controls Technician",
+      references:[
+        {
+          name:"PDP Animation Guide",
+          url:"#"
+        }
+      ]
+    }
+
+  ]
+}
+
+];
+
+const container =
+document.getElementById("checklistContainer");
+
+function renderChecklist(){
+
+container.innerHTML = "";
+
+checklistData.forEach((section,sectionIndex)=>{
+
+const sectionDiv =
+document.createElement("div");
+
+sectionDiv.className = "section";
+
+const criticalCount =
+section.items.filter(i=>i.critical).length;
+
+let html = `
+
+<div class="section-header">
+
+<div>
+▶ ${section.category}
+</div>
+
+<div class="section-stats">
+${section.items.length} Checks | ${criticalCount} Critical
+</div>
+
+</div>
+
+<div class="section-content">
+
+`;
+
+if(section.allowNA){
+
+html += `
+
+<div class="na-toggle">
+
+<label>
+
+<input
+type="checkbox"
+class="na-checkbox"
+>
+
+Mark Entire Section as N/A
+
+</label>
+
+</div>
+
+`;
+
+}
+
+section.items.forEach(item=>{
+
+html += `
+
+<div class="check-item ${item.critical ? 'red-item':''}">
+
+<div class="check-title">
+
+<input
+type="checkbox"
+class="check-checkbox"
+data-critical="${item.critical}"
+>
+
+${item.title}
+
+</div>
+
+<div class="check-description">
+${item.description}
+</div>
+
+${item.critical ? `
+<div class="warning">
+CRITICAL ITEM — Required before go-live.
+</div>
+` : ''}
+
+<div class="owner">
+Owner: ${item.owner}
+</div>
+
+<textarea
+class="notes"
+placeholder="Enter Notes"
+></textarea>
+
+<div class="reference-buttons">
+
+${item.references.map(ref => `
+
+<button
+class="ref-btn"
+onclick="window.open('${ref.url}')"
+>
+
+${ref.name}
+
+</button>
+
+`).join('')}
+
+</div>
+
+</div>
+
+`;
+
+});
+
+html += `</div>`;
+
+sectionDiv.innerHTML = html;
+
+container.appendChild(sectionDiv);
+
+});
+
+attachEvents();
+
+updateDashboard();
+
+}
+
+function attachEvents(){
+
+document
+.querySelectorAll(".section-header")
+.forEach(header=>{
+
+header.addEventListener("click",()=>{
+
+const section =
+header.parentElement;
+
+section.classList.toggle("open");
+
+if(section.classList.contains("open")){
+
+header.children[0].innerHTML =
+header.children[0].innerHTML.replace("▶","▼");
+
+}else{
+
+header.children[0].innerHTML =
+header.children[0].innerHTML.replace("▼","▶");
+
+}
+
+});
+
+});
+
+document
+.querySelectorAll(".check-checkbox")
+.forEach(box=>{
+
+box.addEventListener("change",()=>{
+
+const parent =
+box.closest(".check-item");
+
+if(box.checked){
+
+parent.classList.add("completed");
+
+}else{
+
+parent.classList.remove("completed");
+
+}
+
+saveProgress();
+
+updateDashboard();
+
+});
+
+});
+
+document
+.querySelectorAll(".na-checkbox")
+.forEach(box=>{
+
+box.addEventListener("change",()=>{
+
+const section =
+box.closest(".section");
+
+const checks =
+section.querySelectorAll(".check-checkbox");
+
+if(box.checked){
+
+section.classList.add("disabled");
+
+checks.forEach(c=>{
+
+c.disabled = true;
+c.checked = false;
+
+});
+
+}else{
+
+section.classList.remove("disabled");
+
+checks.forEach(c=>{
+
+c.disabled = false;
+
+});
+
+}
+
+saveProgress();
+
+updateDashboard();
+
+});
+
+});
+
+}
+
+function updateDashboard(){
+
+const allChecks =
+Array.from(
+document.querySelectorAll(".check-checkbox")
+).filter(c=>!c.disabled);
+
+const completed =
+allChecks.filter(c=>c.checked);
+
+const critical =
+allChecks.filter(c=>
+c.dataset.critical === "true" &&
+!c.checked
+);
+
+const total =
+allChecks.length;
+
+const complete =
+completed.length;
+
+const pending =
+total - complete;
+
+const percent =
+total === 0
+? 0
+: Math.round((complete / total) * 100);
+
+document.getElementById("totalChecks").innerText =
+total;
+
+document.getElementById("completedChecks").innerText =
+complete;
+
+document.getElementById("pendingChecks").innerText =
+pending;
+
+document.getElementById("completionPercent").innerText =
+percent + "%";
+
+document.getElementById("criticalRemaining").innerText =
+critical.length;
+
+}
+
+function saveProgress(){
+
+const states = [];
+
+document
+.querySelectorAll(".check-checkbox")
+.forEach(box=>{
+
+states.push({
+checked:box.checked,
+disabled:box.disabled
+});
+
+});
+
+localStorage.setItem(
+"logistiqChecklist",
+JSON.stringify(states)
+);
+
+}
+
+function loadProgress(){
+
+const saved =
+JSON.parse(
+localStorage.getItem("logistiqChecklist")
+);
+
+if(saved){
+
+document
+.querySelectorAll(".check-checkbox")
+.forEach((box,index)=>{
+
+if(saved[index]){
+
+box.checked =
+saved[index].checked;
+
+box.disabled =
+saved[index].disabled;
+
+if(box.checked){
+
+box.closest(".check-item")
+.classList.add("completed");
+
+}
+
+}
+
+});
+
+}
+
+updateDashboard();
+
+}
+
+document
+.getElementById("searchBar")
+.addEventListener("keyup",function(){
+
+const value =
+this.value.toLowerCase();
+
+document
+.querySelectorAll(".check-item")
+.forEach(item=>{
+
+const text =
+item.innerText.toLowerCase();
+
+item.style.display =
+text.includes(value)
+? "block"
+: "none";
+
+});
+
+});
+
+renderChecklist();
+
+loadProgress();
+
+</script>
+
+</body>
+</html>
