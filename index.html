@@ -340,7 +340,28 @@ Site Information
 <input type="text">
 </div>
 
+<div class="input-group">
+
+<button
+onclick="setBuild()"
+style="
+margin-top:10px;
+padding:12px;
+border:none;
+background:#003B7A;
+color:white;
+border-radius:10px;
+cursor:pointer;
+width:100%;
+"
+>
+
+Load / Create Build
+
+</button>
 </div>
+
+</div> 
 
 </div>
 
@@ -349,9 +370,13 @@ type="text"
 class="search-bar"
 id="searchBar"
 placeholder="Search checklist..."
+style="display:none;"
 >
 
-<div id="checklistContainer"></div>
+<div
+id="checklistContainer"
+style="display:none;"
+></div>
 
 <div class="footer">
 Logistiq Internal Engineering Platform
@@ -2504,6 +2529,60 @@ const checklistData = [
 
 ];
 
+let currentBuild = "";
+
+function setBuild(){
+
+const site =
+document.querySelectorAll("input")[0].value;
+
+const finger =
+document.querySelectorAll("input")[1].value;
+
+const controlsTech =
+document.querySelectorAll("input")[2].value;
+
+const fpm =
+document.querySelectorAll("input")[3].value;
+
+if(
+site === "" ||
+finger === "" ||
+controlsTech === "" ||
+fpm === ""
+){
+
+alert(
+"Please complete all Site Information fields."
+);
+
+return;
+
+}
+
+currentBuild =
+site + "-" +
+finger + "-" +
+controlsTech + "-" +
+fpm;
+
+document.getElementById(
+"checklistContainer"
+).style.display = "block";
+
+document.getElementById(
+"searchBar"
+).style.display = "block";
+
+alert(
+"Build Loaded: " + currentBuild
+);
+
+renderChecklist();
+
+loadProgress();
+
+}
 const container =
 document.getElementById("checklistContainer");
 
